@@ -6,56 +6,66 @@ const cardsContainer = document.getElementById("cards-container");
 const API_URL = "https://ozarktechwebdev.com/api/consoles.json";
 
 function loadConsoles() {
+  // Reset the page at the start of each request
+  statusMessage.textContent = "Loading...";
+  summaryLine.textContent = "";
+  cardsContainer.innerHTML = "";
+
   const xhr = new XMLHttpRequest();
   xhr.open("GET", API_URL);
 
   xhr.onreadystatechange = function () {
-    if (xhr.readyState == 4 && xhr.status == 200) {
-      const data = JSON.parse(xhr.responseText);
+    if (xhr.readyState == 4) {
+      if (xhr.status == 200) {
+        statusMessage.textContent = "";
 
-      console.log(data);
-      console.log(data.consoles);
+        const data = JSON.parse(xhr.responseText);
 
-      cardsContainer.innerHTML = "";
+        console.log(data);
+        console.log(data.consoles);
 
-      for (const item of data.consoles) {
-        const card = document.createElement("div");
-        card.className = "card";
+        for (const item of data.consoles) {
+          const card = document.createElement("div");
+          card.className = "card";
 
-        const img = document.createElement("img");
-        img.src = item.image;
-        img.alt = item.name;
+          const img = document.createElement("img");
+          img.src = item.image;
+          img.alt = item.name;
 
-        const h2 = document.createElement("h2");
-        h2.textContent = item.name;
+          const h2 = document.createElement("h2");
+          h2.textContent = item.name;
 
-        const p = document.createElement("p");
-        p.textContent = item.manufacturer + " - " + item.year;
+          const p = document.createElement("p");
+          p.textContent = item.manufacturer + " - " + item.year;
 
-        card.appendChild(img);
-        card.appendChild(h2);
-        card.appendChild(p);
+          card.appendChild(img);
+          card.appendChild(h2);
+          card.appendChild(p);
 
-        cardsContainer.appendChild(card);
-      }
-
-      // Summary: total, oldest, newest
-      let oldest = data.consoles[0];
-      let newest = data.consoles[0];
-
-      for (let i = 1; i < data.consoles.length; i++) {
-        if (data.consoles[i].year < oldest.year) {
-          oldest = data.consoles[i];
+          cardsContainer.appendChild(card);
         }
-        if (data.consoles[i].year > newest.year) {
-          newest = data.consoles[i];
-        }
-      }
 
-      summaryLine.textContent =
-        data.consoles.length + " consoles · " +
-        "Oldest: " + oldest.name + " (" + oldest.year + ") · " +
-        "Newest: " + newest.name + " (" + newest.year + ")";
+        // Summary: total, oldest, newest
+        let oldest = data.consoles[0];
+        let newest = data.consoles[0];
+
+        for (let i = 1; i < data.consoles.length; i++) {
+          if (data.consoles[i].year < oldest.year) {
+            oldest = data.consoles[i];
+          }
+          if (data.consoles[i].year > newest.year) {
+            newest = data.consoles[i];
+          }
+        }
+
+        summaryLine.textContent =
+          data.consoles.length + " consoles · " +
+          "Oldest: " + oldest.name + " (" + oldest.year + ") · " +
+          "Newest: " + newest.name + " (" + newest.year + ")";
+      } else {
+        statusMessage.textContent =
+          "Error: could not load consoles (status " + xhr.status + ").";
+      }
     }
   };
 
