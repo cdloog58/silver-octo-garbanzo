@@ -15,7 +15,27 @@ function loadConsoles() {
 
       console.log(data);
       console.log(data.consoles);
-      console.log(data.consoles.length);
+
+      for (const item of data.consoles) {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const img = document.createElement("img");
+        img.src = item.image;
+        img.alt = item.name;
+
+        const h2 = document.createElement("h2");
+        h2.textContent = item.name;
+
+        const p = document.createElement("p");
+        p.textContent = item.manufacturer + " - " + item.year;
+
+        card.appendChild(img);
+        card.appendChild(h2);
+        card.appendChild(p);
+
+        cardsContainer.appendChild(card);
+      }
     }
   };
 
