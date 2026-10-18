@@ -16,6 +16,8 @@ function loadConsoles() {
       console.log(data);
       console.log(data.consoles);
 
+      cardsContainer.innerHTML = "";
+
       for (const item of data.consoles) {
         const card = document.createElement("div");
         card.className = "card";
@@ -36,6 +38,24 @@ function loadConsoles() {
 
         cardsContainer.appendChild(card);
       }
+
+      // Summary: total, oldest, newest
+      let oldest = data.consoles[0];
+      let newest = data.consoles[0];
+
+      for (let i = 1; i < data.consoles.length; i++) {
+        if (data.consoles[i].year < oldest.year) {
+          oldest = data.consoles[i];
+        }
+        if (data.consoles[i].year > newest.year) {
+          newest = data.consoles[i];
+        }
+      }
+
+      summaryLine.textContent =
+        data.consoles.length + " consoles · " +
+        "Oldest: " + oldest.name + " (" + oldest.year + ") · " +
+        "Newest: " + newest.name + " (" + newest.year + ")";
     }
   };
 
